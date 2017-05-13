@@ -1,0 +1,130 @@
+<!DOCTYPE>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 01</title>
+  </head>
+<body>
+
+  <ul id="source">
+    <li>北京空气质量：<b>90</b></li>
+    <li>上海空气质量：<b>70</b></li>
+    <li>天津空气质量：<b>80</b></li>
+    <li>广州空气质量：<b>50</b></li>
+    <li>深圳空气质量：<b>40</b></li>
+    <li>福州空气质量：<b>32</b></li>
+    <li>成都空气质量：<b>90</b></li>
+  </ul>
+
+  <ul id="resort">
+    <!-- 
+    <li>第一名：北京空气质量：<b>90</b></li>
+    <li>第二名：北京空气质量：<b>90</b></li>
+    <li>第三名：北京空气质量：<b>90</b></li>
+     -->
+
+  </ul>
+
+  <button id="sort-btn">排序</button>
+
+<script type="text/javascript">
+
+/**
+ * getData方法
+ * 读取id为source的列表，获取其中城市名字及城市对应的空气质量
+ * 返回一个数组，格式见函数中示例
+ */
+function getData() {
+  var sourceText = document.getElementById('source').innerText;
+  var sourceData = sourceText.split(/\n/,7);
+  var data = [];
+  sourceData.forEach(function(item,index,array){
+    var newItem = item.toString().replace(/空气质量/,'').split("：",7);
+    data.push(newItem);
+  });
+  return data;
+}
+
+/**
+ * sortAqiData
+ * 按空气质量对data进行从小到大的排序
+ * 返回一个排序后的数组
+ */
+function sortAqiData(data) {
+  function sortFunction(index){
+    return function(item1,item2){
+      return item1[index]-item2[index];
+    }; 
+  }
+  return data.sort(sortFunction(1));
+}
+
+/**
+ * convert
+ * 将数字转化成汉字一二.....
+ */
+function convert(num)
+{
+    var arr = ["一","二","三","四","五","六","七","八","九","十"];
+    for (var i = 0; i < arr.length; i++) {
+        num = num.replace(new RegExp(i,'g'), arr[i]);
+    }                 
+    return num;
+}
+
+/**
+ * render
+ * 将排好序的城市及空气质量指数，输出显示到id位resort的列表中
+ * 格式见ul中的注释的部分
+ */
+function render(data) {
+  var globalData = data.map(function(item,index,array){
+    return item=['第'+(convert(index.toString()))+'名：'+item[0]+'空气质量：',item[1]];
+  });
+  globalData.forEach(function(item,index,array){
+    var resortUl = document.getElementById('resort');
+    var resortLi = document.createElement('li');
+    var resortB = document.createElement('b');
+    resortUl.style.listStyle='none';
+    resortB.innerHTML = item[1];
+    resortLi.innerHTML =item[0];
+    resortLi.appendChild(resortB);
+    resortUl.appendChild(resortLi);
+  });
+}
+
+function btnHandle() {
+  var aqiData = getData();
+  aqiData = sortAqiData(aqiData);
+  render(aqiData);
+}
+
+/**
+ * eventUnit
+ * 事件处理程序
+ * 根据浏览器检测使用哪种事件处理程序
+ */
+var eventUnit = {
+  addHandler:function(ele,type,handler){
+    if(ele.addEventListener){
+      ele.addEventListener(type,handler,false);
+    }else if(ele.attachEvent){
+      ele.attachEvent('on'+type,handler);
+    }else{
+      ele['on'+type]=handler;
+    }
+  }
+}
+
+function init() {
+
+  // 在这下面给sort-btn绑定一个点击事件，点击时触发btnHandle函数
+  var myBtn =document.getElementById('sort-btn');
+  eventUnit.addHandler(myBtn,'click',btnHandle)
+}
+
+init();
+
+</script>
+</body>
+</html>
