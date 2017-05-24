@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 04</title>
+    <style> 
+    .btnCommand{
+      background-color: #fff;
+      border-radius:5px;
+      -moz-border-radius:5px;
+    }
+    span{
+      color: #fff;
+      background-color: red;
+      margin: 10px;
+      padding: 10px;
+      display: inline-block;
+    }
+    </style>
+  </head>
+<body>
+  <input id="inputBox" name="number" value="">
+  <button class="btnCommand">左侧入</button>
+  <button class="btnCommand">右侧入</button>
+  <button style="margin-leftIn:20px;" class="btnCommand">左侧出</button>
+  <button class="btnCommand">右侧出</button>
+  <div id='parent' style="margin-top: 20px;"></div>
+<script type="text/javascript">
+  //var btnCommand = document.getElementsByClassName('btnCommand');
+  var btnCommand = document.querySelectorAll('.btnCommand');
+  var inputBox = document.getElementById('inputBox');
+  var parentDiv = document.getElementById('parent');
+
+/**
+ * handler方法。
+*/
+  function handler(){
+        childDiv = document.createElement('span');   
+        childDiv.innerText = inputBox.value;
+        inputBox.value = '';
+        childNum = document.getElementsByClassName('anyspan');
+  }   
+
+/**
+ * nodesUnit對象，
+ * 封裝4個方法，分別是左入右入；左出右出，
+ * 將隊列個數控制在6個。
+*/
+  var nodesUnit={
+    leftIn: function(){
+        handler();
+        parentDiv.insertBefore(childDiv,parentDiv.childNodes[0]);
+        if(childNum.length>6){
+          parentDiv.removeChild(parentDiv.lastChild);
+        };
+        eventUnit.addHandler(childDiv,'click',deleteNode);      
+      },
+    rightIn: function(){
+      handler();
+      parentDiv.appendChild(childDiv);
+      if(childNum.length>6){
+        parentDiv.removeChild(parentDiv.firstChild);
+      };
+      eventUnit.addHandler(childDiv,'click',deleteNode); 
+    },
+    leftOut: function(){
+      alert(parentDiv.firstChild.innerText);
+      if(parentDiv.firstChild==null){
+        nodesUnit.leftOut = null;
+      }else{
+        parentDiv.removeChild(parentDiv.firstChild);
+      };
+    },
+    rightOut: function(){
+      alert(parentDiv.lastChild.innerText);
+      if(parentDiv.lastChild==null){
+        nodesUnit.rightOut;
+      }else{
+        parentDiv.removeChild(parentDiv.lastChild);        
+      }
+    }
+  };
+
+/**
+ * eventUnit對象，
+ * 檢測瀏覽器適宜哪個事件處理程序。
+*/
+  var eventUnit = {
+    addHandler: function(ele,type,handler){
+      if(ele.addEventListener){
+        ele.addEventListener(type,handler,false);
+      }else if(ele.attachEvent){
+        ele.attachEvent('on'+type,handler);
+      }else{
+        ele['on'+type]=handler;
+      }
+    }
+  };
+
+/**
+ * deleteNode方法，
+ * 刪除選中的元素(隊列)。
+*/
+  function deleteNode(){
+    parentDiv.removeChild(this);
+  }  
+
+/**
+ * init方法，
+ * 執行相應的事件處理程序。
+*/
+  function init(){
+    //debugger;
+    eventUnit.addHandler(btnCommand[0],'click',nodesUnit.leftIn);
+    eventUnit.addHandler(btnCommand[1],'click',nodesUnit.rightIn);
+    eventUnit.addHandler(btnCommand[2],'click',nodesUnit.leftOut);
+    eventUnit.addHandler(btnCommand[3],'click',nodesUnit.rightOut);
+  }
+  init();
+ </script>
+</body>
+</html>
