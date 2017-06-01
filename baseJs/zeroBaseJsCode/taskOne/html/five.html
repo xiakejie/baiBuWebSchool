@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>任务五</title>
+    <style type="text/css">
+        span{
+            background-color: #F44336;
+            display: inline-block;
+            width: 20px;
+            margin-left: 2px;
+            color: #fff;
+        }
+        button{
+          background-color: #fff;
+          border-radius:5px;
+          -moz-border-radius:5px;
+        }
+    </style>
+  </head>
+<body>
+	<div>
+        <input id="txt" name="number" value="">
+        <button>左側入</button>
+        <button>右側入</button>
+        <button>左側出</button>
+        <button>右側出</button>
+        <button>排序</button>
+    </div>
+    <div id="show"></div>
+<script type="text/javascript">
+    /**
+     * deleteNode方法
+     * 删除一个队列元素
+    */
+    function deleteNode(){
+        show.removeChild(this);
+        getData();
+    }
+    /**
+     * leftInEvent方法
+     * 左添加
+    */
+    function leftInEvent(){
+        var txt = document.getElementById('txt');
+        var span = document.createElement('span');
+        if(txt.value>=10&&txt.value<=100){
+            span.style.height = txt.value+'px';
+            if(show.childElementCount>60){
+                alert('最多添加60个');
+                show.removeChild(show.firstElementChild);
+            }else{
+                show.insertBefore(span,show.firstElementChild);
+                getData();
+                txt.value = '';                    
+            }
+        }else{
+            alert('请输入10至100');
+            txt.value = '';
+        }
+        span.addEventListener('click',deleteNode,false);
+    }
+    /**
+     * leftOutEvent方法
+     * 从队列左侧删除
+    */
+    function leftOutEvent(){
+        show.removeChild(show.firstElementChild);
+        getData();
+    }
+    /**
+     * rightInEvent方法
+     * 右添加
+    */
+    function rightInEvent(){
+        var txt = document.getElementById('txt');
+        var span = document.createElement('span');
+        if(txt.value>=10&&txt.value<=100){
+            if(show.childElementCount<=60){
+                span.style.height = txt.value + 'px';            
+                show.appendChild(span);
+                getData();
+                txt.value = '';
+            }else{
+                alert('the last is 60');
+                show.removeChild(show.lastElementChild);
+                txt.value = '';
+            }
+        }else{
+            alert('please between 10 and 100');
+            txt.value = '';
+        }
+        span.addEventListener('click',deleteNode,false);
+    }
+    /**
+     * rightOutEvent方法
+     * 从队列右侧删除
+    */
+    function rightOutEvent(){
+        show.removeChild(show.lastElementChild);
+        getData();
+    }
+    /**
+     * sortData方法
+     * 数组排序函数
+    */
+    function sortData(data){
+        function sortFunction (item1,item2){
+            return item1-item2;
+        };
+        return data.sort(sortFunction());
+    }
+    /**
+     * getData方法
+     * 返回一个由大到小排序的数组
+    */
+    function getData(){
+        var showarr = new Array;
+        for(var i=0,len=show.childNodes.length;i<len;i++){
+            showarr.push(show.childNodes[i].offsetHeight);
+        }
+        return sortData(showarr);
+    }
+    /**
+     * sortShow方法
+     * 生成一个排好序的队列
+    */
+    function sortShow(){
+        debugger;
+        var newData = getData();
+        show.innerHTML = '';
+        newData.forEach(function(item,index,array){
+            var newspan = document.createElement('span');
+            newspan.style.height = item+'px';
+            show.appendChild(newspan);
+        });
+    }
+    /**
+     * init方法
+     * 初始化，包含一些dom事件
+    */
+    function init(){
+        var show = document.getElementById('show');
+        var buttons = document.querySelectorAll('button');
+        
+        buttons[0].addEventListener('click',leftInEvent,false);
+        buttons[1].addEventListener('click',rightInEvent,false);
+        buttons[2].addEventListener('click',leftOutEvent,false); 
+        buttons[3].addEventListener('click',rightOutEvent,false);
+        buttons[4].addEventListener('click',sortShow,false);
+    }
+    init();
+</script>
+</body>
+</html>
